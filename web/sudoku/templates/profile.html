@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        header {
+            width: 100%;
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+        header a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+        }
+        header form {
+            display: inline;
+        }
+        main {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .board-table {
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .board-table td {
+            width: 40px;
+            height: 40px;
+            border: 1px solid #ddd;
+            text-align: center;
+            font-size: 20px;
+        }
+        .thick-right {
+            border-right: 3px solid #000;
+        }
+        .thick-bottom {
+            border-bottom: 3px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div>Sudoku World</div>
+        <div>
+            <a href="{% url 'index' %}">Home</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" style="background:none; border:none; color:white; cursor:pointer;">Logout</button>
+            </form>
+        </div>
+    </header>
+    <main>
+        <h1>Profile</h1>
+        <h2>Saved Sudoku Boards</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date Created</th>
+                    <th>Original Board</th>
+                    <th>Solved Board</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for board in boards %}
+                <tr>
+                    <td>{{ board.date_created }}</td>
+                    <td>
+                        <table class="board-table">
+                            {% for row in board.original_board|slice:":81"|make_list %}
+                            {% if forloop.counter0|divisibleby:9 %}
+                            <tr>
+                            {% endif %}
+                                <td class="{% cycle 'thick-right' '' '' 'thick-right' '' '' 'thick-right' '' '' %} {% cycle 'thick-bottom' 'thick-bottom' 'thick-bottom' '' '' '' 'thick-bottom' 'thick-bottom' 'thick-bottom' %}">
+                                    {{ row }}
+                                </td>
+                            {% if forloop.counter0|add:1|divisibleby:9 %}
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </table>
+                    </td>
+                    <td>
+                        <table class="board-table">
+                            {% for row in board.solved_board|slice:":81"|make_list %}
+                            {% if forloop.counter0|divisibleby:9 %}
+                            <tr>
+                            {% endif %}
+                                <td class="{% cycle 'thick-right' '' '' 'thick-right' '' '' 'thick-right' '' '' %} {% cycle 'thick-bottom' 'thick-bottom' 'thick-bottom' '' '' '' 'thick-bottom' 'thick-bottom' 'thick-bottom' %}">
+                                    {{ row }}
+                                </td>
+                            {% if forloop.counter0|add:1|divisibleby:9 %}
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </table>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

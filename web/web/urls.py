@@ -15,9 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth.views import LoginView
 from django.urls import path
-from sudoku.views import sudoku_solver_view, index
+from sudoku.views import sudoku_solver_view, index, RegisterView, profile_view, logout_view
 urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('register/',RegisterView.as_view() , name="register"),
+    path("login", LoginView.as_view(template_name='login.html'), name="login"),
+    path("logout", logout_view, name="logout"),
+    path("profile/", profile_view, name="profile"),
     path("solve/", sudoku_solver_view, name="sudoku_solver_view"),
-    path("", index, name="index"),
+    path("", index, name="index")
 ]
